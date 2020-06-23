@@ -1,4 +1,4 @@
 ﻿  Client.cpp
-c:\users\administrator.cns-7gsnb21mtj6\documents\visual studio 2015\projects\socket\client\client.cpp(19): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\administrator.cns-7gsnb21mtj6\documents\visual studio 2015\projects\socket\client\client.cpp(34): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
   Client.vcxproj -> C:\Users\Administrator.CNS-7GSNB21MTJ6\Documents\Visual Studio 2015\Projects\Socket\Debug\Client.exe
   Client.vcxproj -> C:\Users\Administrator.CNS-7GSNB21MTJ6\Documents\Visual Studio 2015\Projects\Socket\Debug\Client.pdb (Partial PDB)
