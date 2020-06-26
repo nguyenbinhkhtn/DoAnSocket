@@ -12,6 +12,7 @@ const int CHECK_LOGIN = 1;
 const int CREATE_NEW_ACCOUNT = 2;
 const int SEND_FILE = 3;
 const int RECV_FILE = 4;
+const int CLIENT_LOG_OUT = 5;
 
 long GetFileSize(string filename)
 {
@@ -29,6 +30,8 @@ int convertStringToInt(string s) {
 	return num1;
 }
 
+
+
 struct User {
 	string id;
 	string password;
@@ -36,9 +39,42 @@ struct User {
 vector<string> listFile;
 vector<User> listUser;
 
+struct userSocket {
+	string userName;
+	SOCKET soc;
+};
+
+vector<userSocket> listSoc;
+
 User user1 = { "binci","binci" };
 User user2 = { "admin", "admin" };
 User user3 = { "mentor", "mentor" };
+
+string getUserName(SOCKET sock) {
+	vector<userSocket>::iterator item;
+	userSocket temp;
+	for (item = listSoc.begin(); item != listSoc.end(); item++) {
+		temp = *item;
+		if (sock == temp.soc) {
+			return temp.userName;
+		}
+	}
+	return "-1";
+}
+
+void deleteUserSock(SOCKET sock) {
+	vector<userSocket>::iterator item;
+	userSocket temp;
+	int i = 0;
+	for (item = listSoc.begin(); item != listSoc.end(); item++) {
+		temp = *item;
+		i++;
+		if (sock == temp.soc) {
+			listSoc.erase(item);
+			break;
+		}
+	}
+}
 
 int checkCreateNewAccount(string id, string password, vector<User> &listUser) {
 	vector<User>::iterator item;
@@ -86,9 +122,9 @@ void s_Check_Login(SOCKET sock, vector<User> &listUser) {
 	if (result == 1) {
 		send(sock, accept.c_str(), accept.size() + 1, 0);
 	}
-	ss << "Client #" << sock << " is login" << "\r\n";
-	strOut = ss.str();
-	cout << strOut << endl;
+	userSocket usersoc = { userId, sock };
+	listSoc.push_back(usersoc);
+	cout << userId << " is login" << endl;
 }
 
 void s_Check_Create_New_User(SOCKET sock, vector<User> &listUser) {
@@ -122,6 +158,11 @@ void s_Check_Create_New_User(SOCKET sock, vector<User> &listUser) {
 void s_Send_File(SOCKET FileSendSocket) {
 	string strList;
 	vector<string>::iterator item;
+	string userName = getUserName(FileSendSocket);
+	if (userName == "-1") {
+		cout << "Client is not login" << endl;
+		return;
+	}
 	int i = 1;
 	for (item = listFile.begin(); item != listFile.end(); item++) {
 		strList = strList + to_string(i) + " " + *item + " - ";
@@ -155,13 +196,18 @@ void s_Send_File(SOCKET FileSendSocket) {
 		else
 		{
 			send(FileSendSocket, buf, size , 0); //gui qua file
-			cout << "[+]Sending success..." << endl;
+			cout << "[+]Sending to " << userName << " success..." << endl;
 		}
 	}
 }
 
 void recvFile(SOCKET sock) {
-	cout << endl << "[+] Server is receiving..." << endl;
+	string userName = getUserName(sock);
+	if (userName == "-1") {
+		cout << "Client is not login" << endl;
+		return;
+	}
+	cout << endl << "[+] " << userName << " want to upload file..." << endl;
 	char bufFileName[4096];
 	ZeroMemory(bufFileName, 4096);
 	int resultName = recv(sock, bufFileName, 4096, 0);
@@ -193,6 +239,17 @@ void recvFile(SOCKET sock) {
 		fileRC.write(bufFile, Size);
 	}
 	listFile.push_back(fileName);
+}
+
+void client_log_out(SOCKET sock)
+{
+	string userName = getUserName(sock);
+	if (userName == "-1") {
+		cout << "Client is not login" << endl;
+		return;
+	}
+	cout << userName << " log out" << endl;
+	deleteUserSock(sock);
 }
 
 void main() {
@@ -278,6 +335,8 @@ void main() {
 						recvFile(sock);
 						break;
 					}
+					case CLIENT_LOG_OUT:
+						client_log_out(sock);
 					}
 				}
 			}

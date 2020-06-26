@@ -1,4 +1,4 @@
 ﻿  Server.cpp
-c:\users\administrator.cns-7gsnb21mtj6\documents\visual studio 2015\projects\socket\socket\server.cpp(27): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-  Socket.vcxproj -> C:\Users\Administrator.CNS-7GSNB21MTJ6\Documents\Visual Studio 2015\Projects\Socket\Debug\Socket.exe
-  Socket.vcxproj -> C:\Users\Administrator.CNS-7GSNB21MTJ6\Documents\Visual Studio 2015\Projects\Socket\Debug\Socket.pdb (Partial PDB)
+c:\users\administrator.cns-7gsnb21mtj6\documents\visual studio 2015\projects\doansocket\socket\socket\server.cpp(28): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+  Socket.vcxproj -> C:\Users\Administrator.CNS-7GSNB21MTJ6\Documents\Visual Studio 2015\Projects\DoAnSocket\Socket\Debug\Socket.exe
+  Socket.vcxproj -> C:\Users\Administrator.CNS-7GSNB21MTJ6\Documents\Visual Studio 2015\Projects\DoAnSocket\Socket\Debug\Socket.pdb (Partial PDB)

@@ -26,6 +26,7 @@ const int CREATE_NEW_ACCOUNT_REQUEST = 2;
 const int UPLOAD_REQUEST = 4;
 const int DOWLOAD_REQUEST = 3;
 const int DENIED = -1;
+const int LOGOUT = 5;
 
 int convertStringToInt(string s) {
 	int l1 = s.length();
@@ -196,6 +197,19 @@ void create_New_Account_Request(SOCKET sock, char buf[4096]) {
 	}
 }
 
+void logOut(SOCKET sock)
+{
+	string sendRequestLogOut = "5";
+	int sendResult = send(sock, sendRequestLogOut.c_str(), sendRequestLogOut.size() + 1, 0);
+	if (sendResult == SOCKET_ERROR) {
+		cerr << "ERROR to send request" << endl;
+		return;
+	}
+	closesocket(sock);
+	WSACleanup();
+	return;
+}
+
 void main()
 {
 	string ipAdress = "127.0.0.1";
@@ -246,9 +260,16 @@ void main()
 	bool isLogin = false;
 	int tt = 1;
 	do {
+		if (connResult == SOCKET_ERROR) {
+			cerr << "[-]Can't connect to server, Er #" << WSAGetLastError() << endl;
+			cout << "Server is shutdown" << endl;
+			closesocket(sock);
+			WSACleanup();
+			return;
+		}
 		int request;
 		cout <<endl << "[+]Enter your request send to server: " << endl;
-		cout << "1. Login" << "2. Create new account" <<  " 3. Dowload file" << " 4. Upload file" << endl << "> ";
+		cout << "1. Login" << "2. Create new account" <<  " 3. Dowload file" << " 4. Upload file" << " 5. Log out"<<endl << "> ";
 		fflush(stdin);
 		cin >> request;
 		string debug1;
@@ -268,6 +289,9 @@ void main()
 			break;
 		case UPLOAD_REQUEST:
 			upLoadFile(sock);
+			break;
+		case LOGOUT:
+			logOut(sock);
 			break;
 		}
 	} while (tt == 1);
